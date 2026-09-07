@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Loan Prediction Result</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at top left,
+                    #60a5fa,
+                    transparent 35%
+                ),
+                radial-gradient(
+                    circle at bottom right,
+                    #a78bfa,
+                    transparent 35%
+                ),
+                linear-gradient(
+                    135deg,
+                    #1e3a8a,
+                    #4f46e5
+                );
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 30px 20px;
+        }
+
+        .result-card {
+            width: 100%;
+            max-width: 650px;
+
+            background: rgba(255, 255, 255, 0.97);
+
+            padding: 45px;
+
+            border-radius: 25px;
+
+            text-align: center;
+
+            box-shadow:
+                0 25px 60px
+                rgba(0, 0, 0, 0.25);
+        }
+
+        .result-icon {
+            width: 100px;
+            height: 100px;
+
+            margin: 0 auto 20px;
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 50px;
+        }
+
+        .approved-icon {
+            background: #dcfce7;
+        }
+
+        .rejected-icon {
+            background: #fee2e2;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+
+        .approved {
+            color: #16a34a;
+        }
+
+        .rejected {
+            color: #dc2626;
+        }
+
+        .description {
+            color: #6b7280;
+            font-size: 15px;
+            line-height: 1.7;
+
+            margin-bottom: 30px;
+        }
+
+        .confidence-box {
+            background: #f8f9ff;
+
+            border: 1px solid #e5e7eb;
+
+            padding: 20px;
+
+            border-radius: 15px;
+
+            text-align: left;
+        }
+
+        .confidence-header {
+            display: flex;
+            justify-content: space-between;
+
+            margin-bottom: 12px;
+
+            color: #374151;
+            font-weight: bold;
+        }
+
+        .confidence-value {
+            color: #4f46e5;
+            font-size: 20px;
+        }
+
+        .progress {
+            width: 100%;
+            height: 14px;
+
+            background: #e5e7eb;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #4f46e5,
+                    #8b5cf6
+                );
+
+            border-radius: 20px;
+        }
+
+        .buttons {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 15px;
+
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 14px;
+
+            border-radius: 10px;
+
+            text-decoration: none;
+
+            font-weight: bold;
+
+            transition: 0.3s;
+        }
+
+        .new-btn {
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #7c3aed
+                );
+
+            color: white;
+        }
+
+        .history-btn {
+            background: #eef2ff;
+
+            color: #4f46e5;
+
+            border: 1px solid #c7d2fe;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .note {
+            margin-top: 25px;
+
+            padding: 15px;
+
+            background: #f9fafb;
+
+            border-radius: 10px;
+
+            color: #6b7280;
+
+            font-size: 12px;
+
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 15px;
+            }
+
+            .result-card {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .buttons {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="result-card">
+
+    {% if result == "Loan Approved" %}
+
+        <div class="result-icon approved-icon">
+            ✅
+        </div>
+
+        <h1 class="approved">
+            Loan Approved
+        </h1>
+
+        <p class="description">
+            The Random Forest machine learning model
+            predicts that this loan application is
+            eligible for approval.
+        </p>
+
+    {% else %}
+
+        <div class="result-icon rejected-icon">
+            ❌
+        </div>
+
+        <h1 class="rejected">
+            Loan Not Approved
+        </h1>
+
+        <p class="description">
+            The Random Forest machine learning model
+            predicts that this loan application is
+            not eligible for approval.
+        </p>
+
+    {% endif %}
+
+
+    <div class="confidence-box">
+
+        <div class="confidence-header">
+
+            <span>
+                Prediction Confidence
+            </span>
+
+            <span class="confidence-value">
+                {{ confidence }}%
+            </span>
+
+        </div>
+
+
+        <div class="progress">
+
+            <div
+                class="progress-bar"
+                style="width: {{ confidence }}%;">
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="buttons">
+
+        <a href="/" class="btn new-btn">
+            🔄 New Prediction
+        </a>
+
+        <a href="/history" class="btn history-btn">
+            📊 View History
+        </a>
+
+    </div>
+
+
+    <div class="note">
+
+        🤖 This result is generated by a machine learning
+        model for educational/project purposes. It is not
+        an actual financial approval decision.
+
+    </div>
+
+
+</div>
+
+</body>
+
+</html>
